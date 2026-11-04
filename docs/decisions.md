@@ -11,17 +11,6 @@ Alternative I rejected: Pause all implementation until the design check is avail
 Why: I am catching up and can make progress on the concept, stack, chat, and seed data without finalizing the architecture.
 How I will know it was right: the mentor design check does not require a structural change to the core data or route design.
 
-### Week 1: what each turn stores
-Decision: each successful turn appends two entries to chat_session.transcript (JSONB):
-{role, content, at} for the user and for the assistant, in one transaction, only after
-the model replies. If the model fails: HTTP 502, nothing stored, no session row created.
-Only {role, content} is sent to the model; "at" is stored, never sent.
-Alternative I rejected: store the user message first, then the reply (two writes).
-Why: [your words. Think about: what a half-stored turn would look like in the transcript,
-     and what the model would see next turn if a reply were missing]
-How I will know it was right: test_model_failure_no_session_created passes, and after a
-real chat the transcript length is always even.
-
 ### Week 1: primary runtime
 Decision: Ollama `qwen3:8b` as primary chat runtime; `nomic-embed-text` (768 dims) for embeddings.
 Alternative I rejected: DIAL as primary.
@@ -86,6 +75,24 @@ Why: the installed `typescript-eslint` version does not support TypeScript 7, an
 How I will know it was right: `npm install`, `npm run build`, and `npm run lint` all pass.
 
 ### ⏳ Week 1: temperature and context window (decide on C2 after testing)
-### ⏳ Week 1: what each turn stores
 ### ⏳ Week 1: system prompt contents
-### ⏳ Week 1: seed generation and re-run safety (after the seed script)
+
+### Week 1: what each turn stores
+Decision: each successful turn appends two entries to chat_session.transcript (JSONB):
+{role, content, at} for the user and for the assistant, in one transaction, only after
+the model replies. If the model fails: HTTP 502, nothing stored, no session row created.
+Only {role, content} is sent to the model; "at" is stored, never sent.
+Alternative I rejected: store the user message first, then the reply (two writes).
+Why: [your words. Think about: what a half-stored turn would look like in the transcript,
+     and what the model would see next turn if a reply were missing]
+How I will know it was right: test_model_failure_no_session_created passes, and after a
+real chat the transcript length is always even.
+
+### Week 1: seed generation and re-run safety
+Decision: scripts/seed_data.py loads the 3 fixture people unchanged, then generates 24 customers and
+47 shipments with random.Random(42) and a fixed base date (2026-10-01). Upsert on phone_number and
+tracking_number; packages are deleted and re-inserted per seeded shipment; all in one transaction.
+Alternative I rejected: truncate all tables and reload on every run.
+Why: a fixed seed gives the same data on every machine and every run, so demos and tests are repeatable;
+truncate would also wipe chat sessions and anything an admin adds later.
+How I will know it was right: two runs print identical counts (27 / 50 / 103) and test_seed.py passes.
