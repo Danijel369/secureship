@@ -14,47 +14,41 @@ How I will know it was right: the mentor design check does not require a structu
 ### Week 1: primary runtime
 Decision: Ollama `qwen3:8b` as primary chat runtime; `nomic-embed-text` (768 dims) for embeddings.
 Alternative I rejected: DIAL as primary.
-Why: [your words. Facts: no cost vs. 40 USD shared allowance; no VPN needed; reachable from containers
-     via host.docker.internal (tested); M4 with 24 GB runs 8B comfortably; tool call worked on first try]
+Why: No cost vs. 40 USD shared allowance; no VPN needed; reachable from containers via host.docker.internal (tested); M4 with 24 GB runs 8B comfortably; tool call worked on first try
 How I will know it was right: a chat turn returns in a few seconds after warm-up, and the get_weather
 tool call appears 5 out of 5 times.
 
 ### Week 1: DIAL as secondary runtime
 Decision: chat `gpt-4.1-mini-2025-04-14`; embedding `text-embedding-3-small-1` (1536 dims), recorded only.
 Alternative I rejected: a `gpt-5-*` mini model (or `gpt-4.1-nano`).
-Why: [your words. Facts: accepts temperature; no hidden reasoning tokens; cheap; tool call returned
-     correctly; nano is cheaper but weaker at tools]
+Why: Accepts temperature; no hidden reasoning tokens; cheap; tool call returned correctly; nano is cheaper but weaker at tools.
 How I will know it was right: in Week 4 the injection and retrieval tests pass on DIAL with
 max_tokens kept low, and allowance use stays small.
 
 ### Week 1: Ollama runs on the host, not in Docker
 Decision: Ollama as the macOS app; host processes use localhost:11434, containers use host.docker.internal:11434.
 Alternative I rejected: Ollama in a Docker container.
-Why: [your words. Fact: a container on a Mac can't use the Apple GPU (Metal), so it would be much slower]
-How I will know it was right: `docker run --rm curlimages/curl -s http://host.docker.internal:11434/api/tags`
-returns the model list (it does).
+Why: A container on a Mac can't use the Apple GPU, so it would be much slower.
+How I will know it was right: `docker run --rm curlimages/curl -s http://host.docker.internal:11434/api/tags` returns the model list (it does).
 
 ### Week 1: qwen3 thinking off
 Decision: send `"think": false` on every Ollama chat call.
 Alternative I rejected: default thinking on.
-Why: [your words. Facts: thinking adds hidden reasoning text and time; a support reply doesn't need it]
+Why: Thinking adds hidden reasoning text and time and support reply doesn't need it.
 How I will know it was right: no thinking text appears in replies, and the same prompt with thinking on
 vs. off shows the time difference (run both once and note the numbers).
 
 ### Week 1: web stack
 Decision: keep the defaults (FastAPI + uv, React + TS + Vite, Postgres + pgvector, Compose).
-Alternative I rejected: [one you actually considered, e.g. a Node/Express backend]
-Why: [your words. Facts: LangGraph and model clients are Python; FastAPI generates OpenAPI for Orval;
-     mentors support the default fastest; React/TS is my weaker side, so less to invent]
-How I will know it was right: Orval generates a working client from /openapi.json and the chat window
-uses its hooks.
+Alternative I rejected: Node/Express backend
+Why: Model clients are Python; FastAPI generates OpenAPI for Orval; React/TS is my weaker side, so less to invent.
+How I will know it was right: Orval generates a working client from /openapi.json and the chat window uses its hooks.
 
 ### Week 1: HTTP, not WebSockets
-Decision: HTTP request/response; the server signals the UI through response fields (e.g. show code modal).
+Decision: HTTP request/response.
 Alternative I rejected: WebSockets.
-Why: [your words. Facts: simpler, works directly with Orval + React Query, same gate either way]
-How I will know it was right: the code modal appears only when a /chat response tells it to,
-never on page load.
+Why: Works directly with Orval + React Query, same gate either way, I am less familiar with WebSockets.
+How I will know it was right: the code modal appears only when a /chat response tells it to, never on page load.
 
 ### Week 1: browser session id storage
 Decision: Store only the server-generated session id in browser localStorage.
@@ -83,8 +77,7 @@ Decision: each successful turn appends two entries to chat_session.transcript (J
 the model replies. If the model fails: HTTP 502, nothing stored, no session row created.
 Only {role, content} is sent to the model; "at" is stored, never sent.
 Alternative I rejected: store the user message first, then the reply (two writes).
-Why: [your words. Think about: what a half-stored turn would look like in the transcript,
-     and what the model would see next turn if a reply were missing]
+Why: saving both turns together after the reply means the transcript never has a question without an answer; a half-saved turn would send the model a dangling question next time.
 How I will know it was right: test_model_failure_no_session_created passes, and after a
 real chat the transcript length is always even.
 
