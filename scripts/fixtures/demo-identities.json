@@ -1,0 +1,73 @@
+{
+  "note": "Include these three customers and their shipments in the Week 1 seed, then generate the rest up to at least 25 customers and 40 shipments. All data is fictional.",
+  "customers": [
+    {
+      "first_name": "Avery",
+      "last_name": "Chen",
+      "phone_number": "+15551230001",
+      "address": "12 Harbor Lane, Portland, OR 97201"
+    },
+    {
+      "first_name": "Jordan",
+      "last_name": "Patel",
+      "phone_number": "+15551230002",
+      "address": "88 King Street, Austin, TX 78701"
+    },
+    {
+      "first_name": "Sam",
+      "last_name": "Okonkwo",
+      "phone_number": "+15551230003",
+      "address": "4 Canal Road, Chicago, IL 60601"
+    }
+  ],
+  "shipments": [
+    {
+      "customer_ref": "Avery Chen",
+      "tracking_number": "MX10001",
+      "status": "in_transit",
+      "carrier": "MockExpress",
+      "origin": "Seattle, WA",
+      "destination": "Portland, OR",
+      "estimated_delivery": "2026-10-12"
+    },
+    {
+      "customer_ref": "Jordan Patel",
+      "tracking_number": "MX10002",
+      "status": "exception",
+      "exception_reason": "address_mismatch",
+      "carrier": "MockExpress",
+      "origin": "Dallas, TX",
+      "destination": "Austin, TX",
+      "estimated_delivery": "2026-10-09"
+    },
+    {
+      "customer_ref": "Sam Okonkwo",
+      "tracking_number": "MX10003",
+      "status": "delivered",
+      "carrier": "MockExpress",
+      "origin": "Chicago, IL",
+      "destination": "Chicago, IL",
+      "estimated_delivery": "2026-10-02"
+    }
+  ],
+  "packages": [
+    {
+      "tracking_number": "MX10001",
+      "description": "Ceramic mug",
+      "weight_kg": 0.8,
+      "declared_value": 24.0
+    },
+    {
+      "tracking_number": "MX10002",
+      "description": "Laptop sleeve",
+      "weight_kg": 0.4,
+      "declared_value": 45.0
+    },
+    {
+      "tracking_number": "MX10003",
+      "description": "Hardcover book",
+      "weight_kg": 1.1,
+      "declared_value": 32.0
+    }
+  ]
+}

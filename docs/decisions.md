@@ -5,6 +5,12 @@ Format: Decision / Alternative I rejected / Why / How I will know it was right.
 
 ---
 
+### Week 1: delayed design check
+Decision: Continue Day 2 using the workshop defaults and finalize the architecture only after the mentor design check.
+Alternative I rejected: Pause all implementation until the design check is available.
+Why: I am catching up and can make progress on the concept, stack, chat, and seed data without finalizing the architecture.
+How I will know it was right: the mentor design check does not require a structural change to the core data or route design.
+
 ### Week 1: primary runtime
 Decision: Ollama `qwen3:8b` as primary chat runtime; `nomic-embed-text` (768 dims) for embeddings.
 Alternative I rejected: DIAL as primary.
@@ -50,19 +56,23 @@ Why: [your words. Facts: simpler, works directly with Orval + React Query, same 
 How I will know it was right: the code modal appears only when a /chat response tells it to,
 never on page load.
 
-### ⏳ Week 1: where the browser keeps the session id
-Decision: [localStorage (recommended) / memory / httpOnly cookie]
-Alternative I rejected: [...]
-Why: [your words; say what happens on refresh and what someone could do with a stolen id]
-How I will know it was right: refresh keeps the conversation, and editing localStorage can't make
-a session verified (the server decides state).
+### Week 1: browser session id storage
+Decision: Store only the server-generated session id in browser localStorage.
+Alternative I rejected: Keeping it only in React memory.
+Why: localStorage keeps the conversation available after a refresh while the backend remains the only source of truth for session state, verification, and customer identity. A stolen id could access that session until it expires, so no verified flag or customer data is stored in the browser.
+How I will know it was right: refreshing the browser keeps the same session id, while editing localStorage cannot make a session verified.
 
-### ⏳ Week 1: extra shipment column exception_reason
-Decision: add nullable `exception_reason` to shipment; MX10002 = address_mismatch.
-Alternative I rejected: [e.g. encoding the reason inside the status value]
-Why: [your words. Facts: the n8n fixture needs it; the FAQ says the cause is described only from a
-     tool result; the Week 3 Jordan demo needs "row says address mismatch"]
-How I will know it was right: the Jordan query returns MX10002 | exception | address_mismatch.
+### Week 1: shipment exception reason
+Decision: Add a nullable `exception_reason` column to `shipment`; Jordan Patel’s MX10002 has `address_mismatch`.
+Alternative I rejected: Encoding the exception reason inside the shipment status.
+Why: the official seed fixture includes the field, and the Week 2 n8n flow and Week 3 Jordan policy-and-shipment demo need the reason as separate trusted shipment data.
+How I will know it was right: the seeded MX10002 row returns `exception | address_mismatch`, and non-exception shipments have a null reason.
+
+### Week 1: TypeScript compatibility
+Decision: Pin TypeScript to 6.0.3 for the Vite frontend.
+Alternative I rejected: Using TypeScript 7 with `--force` or `--legacy-peer-deps`.
+Why: the installed `typescript-eslint` version does not support TypeScript 7, and forcing the dependency tree would hide a potentially broken lint setup.
+How I will know it was right: `npm install`, `npm run build`, and `npm run lint` all pass.
 
 ### ⏳ Week 1: temperature and context window (decide on C2 after testing)
 ### ⏳ Week 1: what each turn stores
