@@ -70,7 +70,8 @@ Database:
 - Every schema statement is re-runnable (`IF NOT EXISTS`); never `DROP` in schema or init.
 - `scripts/init_db.py` must be idempotent and safe to run multiple times without failing.
 - Tests use the dev database from `DATABASE_URL` and delete only the rows they create.
-  Tests never truncate tables or touch seed data.
+  Exception: `tests/test_seed.py` re-runs the seed, which is idempotent and leaves the
+  seeded state unchanged. Tests never truncate tables or drop anything.
 
 Secrets and cost:
 - Never commit `.env` or keys. Hosts, keys, and passwords come from environment variables,
