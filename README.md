@@ -22,23 +22,30 @@ panel, n8n alert, MCP server, DIAL runtime switch. **This week the chat is ungat
 macOS (Apple Silicon), Git, Docker Desktop, Python 3.12+ with `uv`, Node 20+, Ollama.
 Optional: EPAM VPN + DIAL key (DIAL is used from Week 4).
 
-## Setup
-1. `cp .env.example .env` and fill in the values (never commit `.env`).
+Before you start: Docker Desktop is running, and Ollama is running
+(`brew services start ollama` or open the Ollama app; check with `curl -s http://localhost:11434/api/tags`).
+
+## Setup (once)
+All commands start from the repository root.
+1. `cp .env.example .env`. The defaults work for local development; `DIAL_API_KEY` can stay
+   empty until Week 4. Never commit `.env`.
 2. `ollama pull qwen3:8b && ollama pull nomic-embed-text`
-3. `docker compose up -d postgres`
-4. `cd backend && uv sync`
-5. `uv run python ../scripts/init_db.py && uv run python ../scripts/seed_data.py`
-6. `cd ../frontend && npm install`
-7. Create `frontend/.env.local` with `VITE_API_URL=http://localhost:8000` (not committed).
+3. `docker compose up -d postgres && docker compose ps` (wait until postgres shows `healthy`)
+4. `(cd backend && uv sync && uv run python ../scripts/init_db.py && uv run python ../scripts/seed_data.py)`
+5. `(cd frontend && npm install && echo "VITE_API_URL=http://localhost:8000" > .env.local)`
+
+The seed prints `customers: 27` and shipment counts; it is safe to run again.
 
 ## Run
-- Backend: `cd backend && uv run uvicorn app.main:app --reload --port 8000` → http://localhost:8000/docs
-- Frontend: `cd frontend && npm run dev` → http://localhost:3000
+Requires Postgres (`docker compose up -d postgres`) and Ollama running.
+- Backend (terminal 1): `cd backend && uv run uvicorn app.main:app --reload --port 8000` → http://localhost:8000/docs
+- Frontend (terminal 2): `cd frontend && npm run dev` → http://localhost:3000
 - After a backend API change: with the backend running, `cd frontend && npx orval`, then commit the generated client.
+- Stop: Ctrl+C in both terminals, then `docker compose stop` (data is kept in the `pgdata` volume).
 
 ## Tests
-Postgres must be running and the schema applied.
-`cd backend && uv run pytest` (chat tests mock the model; `test_seed.py` re-runs the idempotent seed).
+Requires Postgres running with the schema applied (setup step 4). Ollama is not needed: the chat tests mock the model.
+`cd backend && uv run pytest` (`test_seed.py` re-runs the idempotent seed).
 
 ## Project layout
 See `CLAUDE.md`. Design notes, approved plans, and the decision log are in `docs/`.
