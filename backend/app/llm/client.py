@@ -1,6 +1,6 @@
 """Ollama chat client with explicit configuration."""
 import httpx
-from app.config import OLLAMA_HOST, CHAT_MODEL, TEMPERATURE, NUM_CTX
+from app.config import OLLAMA_HOST, CHAT_MODEL, TEMPERATURE, NUM_CTX, NUM_PREDICT
 
 
 def chat_ollama(messages: list[dict]) -> str:
@@ -26,6 +26,7 @@ def chat_ollama(messages: list[dict]) -> str:
         "options": {
             "temperature": TEMPERATURE,
             "num_ctx": NUM_CTX,
+            "num_predict": NUM_PREDICT,
         }
     }
 
