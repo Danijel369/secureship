@@ -1,0 +1,17 @@
+date: 2026-11-05
+model: qwen3:8b
+options: stream=false think=false num_ctx=8192
+temperatures_tested: 0.2 (5 runs), 0.8 (5 runs)
+message: In one sentence: what are MockExpress customer support opening hours?
+---
+temperature | run | reply
+0.2 | 1 | MockExpress customer support is typically available 24/7, but it's best to check their official website or contact them directly for the most accurate and up-to-date information.
+0.2 | 2 | MockExpress customer support is typically available 24/7, but it's best to check their official website or contact them directly for the most accurate and up-to-date information.
+0.2 | 3 | MockExpress customer support is typically available 24/7, but it's best to check their official website or contact them directly for the most accurate and up-to-date information.
+0.2 | 4 | MockExpress customer support is typically available 24/7, but it's best to check their official website or contact them directly for the most accurate and up-to-date information.
+0.2 | 5 | MockExpress customer support is typically available 24/7, but it's best to check their official website or contact them directly for the most accurate and up-to-date information.
+0.8 | 1 | MockExpress customer support is typically available 24/7, but it's best to check their official website or contact them directly for the most accurate and up-to-date opening hours.
+0.8 | 2 | MockExpress customer support is generally available 24/7, but it's best to check their official website or contact them directly for the most accurate and up-to-date information.
+0.8 | 3 | MockExpress customer support is generally available 24/7, but specific opening hours may vary depending on the region and platform.
+0.8 | 4 | MockExpress customer support is typically available from 9:00 AM to 6:00 PM, Monday through Friday, though specific hours may vary depending on the region and time of year.
+0.8 | 5 | MockExpress customer support is generally available 24/7, but specific opening hours may vary depending on the region or platform.

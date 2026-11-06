@@ -1,0 +1,16 @@
+date: 2026-11-05
+model: qwen3:8b
+options: stream=false think=false temperature=0.2
+num_ctx_values_tested: 2048, 8192
+prompt_char_count: 38386
+---
+num_ctx: 2048
+reply: Mockingbird
+prompt_eval_count: 2047
+eval_count: 4
+---
+num_ctx: 8192
+reply: PELICAN
+prompt_eval_count: 6440
+eval_count: 5
+---

@@ -1,0 +1,23 @@
+date: 2026-11-05
+model: qwen3:8b
+options: stream=false think=false temperature=0.2 num_ctx=8192
+user_message: What is the weather in Portland?
+tool_defined: get_weather(city: string, required)
+---
+full message object (pretty JSON):
+{
+  "role": "assistant",
+  "content": "",
+  "tool_calls": [
+    {
+      "id": "call_ii65lce4",
+      "function": {
+        "index": 0,
+        "name": "get_weather",
+        "arguments": {
+          "city": "Portland"
+        }
+      }
+    }
+  ]
+}

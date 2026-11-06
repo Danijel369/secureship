@@ -1,0 +1,38 @@
+date: 2026-11-05
+model: qwen3:8b
+endpoint: POST /chat  session_id=null
+---
+request 1: Where is my parcel MX10002? I am Jordan Patel.
+reply   1: Hello Jordan Patel,
+
+Thank you for reaching out. To assist you better, could you please provide the following details:
+
+1. **Shipping address** where the parcel was sent.
+2. **Shipping method** (e.g., standard, express, etc.).
+3. **Date of shipment**.
+4. **Tracking number** (if available).
+
+Once I have this information, I can look up the current status of your parcel MX10002 for you.
+
+Best regards,  
+[Your Name]  
+[Your Position]  
+[Company Name]  
+[Contact Information]
+---
+request 2: How many days does MockExpress hold a parcel after an address mismatch?
+reply   2: MockExpress typically holds a parcel for **7 days** after an address mismatch. During this time, the recipient has the opportunity to claim the package from the nearest MockExpress pickup point or contact customer support to resolve the issue.
+
+If the parcel is not claimed within this period, it may be considered unclaimed and could be disposed of or sent to a different location, depending on the company's policies.
+
+For the most accurate and up-to-date information, it's always best to check directly with MockExpress or refer to their official website or customer support.
+---
+DB query:
+select tracking_number, status, exception_reason, destination from shipment where tracking_number='MX10002';
+DB output:
+ tracking_number |  status   | exception_reason | destination 
+-----------------+-----------+------------------+-------------
+ MX10002         | exception | address_mismatch | Austin, TX
+(1 row)
+
+
