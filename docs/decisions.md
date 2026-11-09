@@ -68,7 +68,12 @@ Alternative I rejected: Using TypeScript 7 with `--force` or `--legacy-peer-deps
 Why: the installed `typescript-eslint` version does not support TypeScript 7, and forcing the dependency tree would hide a potentially broken lint setup.
 How I will know it was right: `npm install`, `npm run build`, and `npm run lint` all pass.
 
-### ⏳ Week 1: temperature and context window (decide on C2 after testing)
+### Week 1: temperature, context window and output limit
+Decision: temperature 0.2, num_ctx 8192, num_predict 400, all set in backend/app/config.py and sent on every Ollama call.
+Alternative I rejected: Ollama defaults (temperature 0.8, a smaller default context window, no output limit).
+Why: 0.2 gave the same answer 5 of 5 times, while 0.8 changed the answer and invented details. With 2048 my prompt start was cut silently, and with 8192 it fit. 400 tokens stops runaway replies and limits DIAL cost. Low temperature does not make answers true; grounding does that.
+How I will know it was right: test_llm_client.py passes, prompt_eval_count stays below 8192 in normal chats, and replies are not cut mid-sentence.
+
 ### ⏳ Week 1: system prompt contents
 
 ### Week 1: what each turn stores
