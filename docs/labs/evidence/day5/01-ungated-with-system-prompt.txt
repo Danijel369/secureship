@@ -1,0 +1,12 @@
+date: 2026-11-09
+model: qwen3:8b, system prompt v2 in code (commit c2b2c5c)
+--- request 1 (shipment): Where is my parcel MX10002? I am Jordan Patel.
+I cannot provide information about the status or location of your parcel. For tracking details, please log in to your MockExpress account or contact MockExpress support directly.
+--- request 2 (policy): How many days does MockExpress hold a parcel after an address mismatch?
+MockExpress holds a parcel for **10 business days** after an address mismatch, as stated in **Section 4.2 of the Shipping Policy**. If no valid recipient is found during this period, the parcel will be returned to the sender.
+
+--- observation
+Compare with docs/labs/evidence/day3/07-ungated.txt (same questions, no system prompt).
+Shipment: the model no longer offers to look up the parcel, but it invented a customer login that MockExpress does not have.
+Policy: the grounding rule was ignored. The model invented "10 business days" and "Section 4.2" (Day 3 without a prompt: "7 days").
+Conclusion: the prompt lowers risk but cannot enforce rules. Grounding needs retrieved chunks plus a reply check in code (Week 3); shipment access needs the gate in code (Weeks 2-3).
