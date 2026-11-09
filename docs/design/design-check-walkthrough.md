@@ -20,7 +20,7 @@ Status: Week 1 done except this check. The shipment gate is not built yet, so un
 - So the shipment rule lives in one backend function that takes the server-side session and refuses unverified sessions before any query.
 
 ## 4. Other design choices
-- Neutral copy ("We couldn't verify that."): a different message for "no such customer" would tell an attacker which details are real (enumeration).
+- Neutral copy ("We couldn't verify that."): a different message for "no such customer" would tell an attacker which details are real.
 - The browser keeps only the session id: no verified flag, no customer id. Editing localStorage cannot make a session verified.
 - Logs contain the session id and error type only, never names, addresses, phones, codes or message content.
 
