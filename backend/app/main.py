@@ -9,6 +9,7 @@ import json
 
 from app.db import get_connection
 from app.llm.client import chat_ollama
+from app.prompts import SYSTEM_PROMPT
 
 # Configure logging - never log message content
 logging.basicConfig(level=logging.INFO)
@@ -67,7 +68,8 @@ def chat(req: ChatRequest):
             raise HTTPException(status_code=500, detail="Database error")
 
     # (b) Call model with no DB connection open
-    messages = [{"role": msg["role"], "content": msg["content"]} for msg in transcript]
+    messages = [{"role": "system", "content": SYSTEM_PROMPT}]
+    messages += [{"role": msg["role"], "content": msg["content"]} for msg in transcript]
     messages.append({"role": "user", "content": req.message})
 
     try:

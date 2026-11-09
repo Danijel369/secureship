@@ -5,6 +5,7 @@ from fastapi.testclient import TestClient
 
 from app.main import app
 from app.db import get_connection
+from app.prompts import SYSTEM_PROMPT
 
 client = TestClient(app)
 
@@ -71,10 +72,12 @@ def test_two_turns_same_session(cleanup_test_sessions):
 
         # Verify messages sent to model on second turn
         messages_sent = mock_ollama.call_args[0][0]
-        assert len(messages_sent) == 3
-        assert messages_sent[0] == {"role": "user", "content": "Hello"}
-        assert messages_sent[1] == {"role": "assistant", "content": "Reply 1"}
-        assert messages_sent[2] == {"role": "user", "content": "How are you?"}
+        assert len(messages_sent) == 4
+        assert messages_sent[0] == {"role": "system", "content": SYSTEM_PROMPT}
+        assert messages_sent[1] == {"role": "user", "content": "Hello"}
+        assert messages_sent[2] == {"role": "assistant", "content": "Reply 1"}
+        assert messages_sent[3] == {"role": "user", "content": "How are you?"}
+        assert sum(1 for m in messages_sent if m["role"] == "system") == 1
         # Verify each dict has only role and content keys
         for msg in messages_sent:
             assert set(msg.keys()) == {"role", "content"}
@@ -211,3 +214,17 @@ def test_model_failure_no_session_created(cleanup_test_sessions):
 
         assert len(final_transcript) == 2  # Still just 2 entries
         assert final_transcript == initial_transcript
+
+
+def test_system_prompt_sent_first(cleanup_test_sessions):
+    """First turn: messages[0] is the system prompt; grounding sentence is present."""
+    with patch("app.main.chat_ollama") as mock_ollama:
+        mock_ollama.return_value = "Hello!"
+
+        response = client.post("/chat", json={"message": "Hi"})
+        assert response.status_code == 200
+        cleanup_test_sessions.append(response.json()["session_id"])
+
+        messages_sent = mock_ollama.call_args[0][0]
+        assert messages_sent[0] == {"role": "system", "content": SYSTEM_PROMPT}
+        assert "Answer policy questions only from the policy documents you are given" in SYSTEM_PROMPT

@@ -75,7 +75,11 @@ Alternative I rejected: Ollama defaults (temperature 0.8, a smaller default cont
 Why: 0.2 gave the same answer 5 of 5 times, while 0.8 changed the answer and invented details. With 2048 my prompt start was cut silently, and with 8192 it fit. 400 tokens stops runaway replies and limits DIAL cost. Low temperature does not make answers true; grounding does that.
 How I will know it was right: test_llm_client.py passes, prompt_eval_count stays below 8192 in normal chats, and replies are not cut mid-sentence.
 
-### ⏳ Week 1: system prompt contents
+### Week 1: system prompt contents
+Decision: one constant SYSTEM_PROMPT in backend/app/prompts.py, based on the tested v2 draft (docs/labs/drafts/system-message.txt). It is prepended as the first message {role: "system"} on every model call and is never stored in the transcript. It includes the grounding sentence: answer policy questions only from the policy documents you are given, and cite the section.
+Alternative I rejected: storing the prompt as the first transcript entry; a text file loaded at startup.
+Why: v1 leaked its rules on injection and v2 refused (Day 3 evidence). Keeping the prompt out of the transcript means a prompt change applies to every session and the transcript holds only the real conversation. The prompt is not a security control: access rules stay in backend code.
+How I will know it was right: a test shows messages[0] is the system prompt and the transcript holds no system entry; a live policy question gets "I don't know" instead of an invented section.
 
 ### Week 1: what each turn stores
 Decision: each successful turn appends two entries to chat_session.transcript (JSONB):
