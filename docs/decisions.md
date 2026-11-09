@@ -53,8 +53,9 @@ How I will know it was right: the code modal appears only when a /chat response 
 ### Week 1: browser session id storage
 Decision: Store only the server-generated session id in browser localStorage.
 Alternative I rejected: Keeping it only in React memory.
-Why: localStorage keeps the conversation available after a refresh while the backend remains the only source of truth for session state, verification, and customer identity. A stolen id could access that session until it expires, so no verified flag or customer data is stored in the browser.
+Why: localStorage keeps the same session (and its stored transcript) after a refresh while the backend remains the only source of truth for session state, verification, and customer identity. A stolen id could access that session until it expires, so no verified flag or customer data is stored in the browser.
 How I will know it was right: refreshing the browser keeps the same session id, while editing localStorage cannot make a session verified.
+Accepted scope (Day 4): the visible chat history is not restored after a page refresh, because there is no history endpoint yet. The transcript stays stored in Postgres.
 
 ### Week 1: shipment exception reason
 Decision: Add a nullable `exception_reason` column to `shipment`; Jordan Patel’s MX10002 has `address_mismatch`.
