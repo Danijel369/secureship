@@ -99,3 +99,15 @@ Alternative I rejected: truncate all tables and reload on every run.
 Why: a fixed seed gives the same data on every machine and every run, so demos and tests are repeatable;
 truncate would also wipe chat sessions and anything an admin adds later.
 How I will know it was right: two runs print identical counts (27 / 50 / 103) and test_seed.py passes.
+
+### Week 2: session states
+Decision: six states: anonymous, collecting, code_sent, verified, locked, escalated. A parcel question moves anonymous to collecting; four matching details move collecting to code_sent; a correct code within 5 minutes moves code_sent to verified. Missing details or no match stay in collecting with "We couldn't verify that." A wrong code stays in code_sent until the 3rd wrong try, which moves to locked. An expired code goes back to collecting. Asking for a human moves any state except locked to escalated, which is final. Every change goes through one move() function with an allowed-transitions table.
+Alternative I rejected: after the 3rd wrong code, go back to collecting.
+Why: going back would let someone ask for fresh codes forever at no cost; locked forces a new conversation and all four details again. Expiry is usually an innocent slow user, so it goes back to collecting.
+How I will know it was right: each failure path has a test and none ends in verified; move() raises on any transition not in the table. Known limit: a new conversation can start again, so real systems would add rate limits per IP or customer.
+
+### Week 2: how typed text becomes trusted data
+Decision: the model extracts identity fields only through the submit_details tool (all four fields optional). Code validates every argument as untrusted input: trimmed, length limits, allowed characters, phone normalised to E.164. Missing fields get a reply asking only for those. A missing tool call, bad JSON or invalid values count as no fields, with no retry. Fields are re-extracted from the visitor's messages since entering collecting; no new column stores identity details.
+Alternative I rejected: let the model decide whether the details belong to a real customer.
+Why: the model cannot know who is a customer and will happily say yes; only code that matches against the database can decide.
+How I will know it was right: tests for object args, string args, bad JSON, missing fields, invalid values and no tool call all pass, and no identity details appear in the logs.
