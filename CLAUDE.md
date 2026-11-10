@@ -5,9 +5,9 @@ last name, address, phone) plus a mock 6-digit code; after that, only that custo
 shipments may be shown. Public policy questions are answered for anyone, citing a policy
 chunk. An admin panel behind Auth0 comes later. All data is synthetic.
 
-Status: Week 1 (setup, backend skeleton, seed, first live chat). The access gate
-is NOT built yet; ungated shipment answers are expected this week.
-(Update this line each week.)
+Status: Week 2 (identity states, extraction, matching, mock 2FA code, scripted handoff,
+n8n alert, retrieval spec). The access gate is NOT built yet (Week 3).
+(This will be updated every week.)
 
 # Stack
 - Backend: Python 3.12, FastAPI, uv, psycopg, httpx (in `backend/`)
